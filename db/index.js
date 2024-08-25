@@ -9,11 +9,31 @@ const options = {}
 
 export const mongoClient = new MongoClient(uri, options);
 
-export const getBlogs = async () => {
+export const getBlogsOrderByDate = async () => {
   const db = mongoClient.db("blogs")
-  const list = await db.collection("list").find().toArray();
+  const list = await db.collection("list").find()
+    .sort({ 'properties.Date.date.start': -1 })
+    .toArray()
+
+
+
   return list
 };
+
+export const getBlogsOrderByTag = async () => {
+  const db = mongoClient.db("blogs")
+  const list = await db.collection("list").aggregate([
+    { $unwind: '$properties.Tags.multiselect' },
+    {
+      $group: {
+        _id: '$properties.Tags.multiselect',
+        data: { $push: '$$ROOT' }
+      }
+    }
+  ]).toArray()
+  return list
+};
+
 
 export const getBlocks = async (pageid) => {
   const db = mongoClient.db("blogs");

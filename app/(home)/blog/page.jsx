@@ -1,5 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default function BlogPage() {
-  return (
-    <div>Blog</div>
-  )
+  redirect("blog/order_by_tag")
 }

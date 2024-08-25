@@ -6,9 +6,9 @@ import { usePathname } from "next/navigation"
 import { ModeToggle } from "./theme-toggle"
 
 const linkList = [
-  { href: "/", title: '关于' },
-  { href: "/blog", title: '博客' },
-  { href: "/project", title: '项目' },
+  { href: "/about", title: '关于', tag: 'about' },
+  { href: "/blog/order_by_tag", title: '博客', tag: 'blog' },
+  { href: "/project", title: '项目', tag: 'project' },
 ]
 
 export const TopNav = () => {
@@ -19,7 +19,7 @@ export const TopNav = () => {
         {
           linkList.map(item => (
             <Link
-              className={cn(pathName === item.href ? 'font-semibold dark:text-white text-black' : '')}
+              className={cn(pathName.includes(item.tag) ? 'font-semibold dark:text-white text-black' : '')}
               href={item.href} key={item.href}>{item.title}</Link>
           ))
         }
