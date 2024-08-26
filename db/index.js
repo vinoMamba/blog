@@ -14,9 +14,6 @@ export const getBlogsOrderByDate = async () => {
   const list = await db.collection("list").find()
     .sort({ 'properties.Date.date.start': -1 })
     .toArray()
-
-
-
   return list
 };
 
@@ -33,6 +30,12 @@ export const getBlogsOrderByTag = async () => {
   ]).toArray()
   return list
 };
+
+export const getBlogInfoById = async (id) => {
+  const db = mongoClient.db("blogs")
+  const blogInfo = await db.collection("list").findOne({ id })
+  return blogInfo
+}
 
 
 export const getBlocks = async (pageid) => {
