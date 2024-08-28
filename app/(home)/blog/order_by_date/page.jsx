@@ -14,6 +14,10 @@ export const metadata = {
 
 export default async function BlogOrderByDatePage() {
   const list = await getBlogsOrderByDate()
+
+  const genBlogTitle = (titleList) => {
+    return titleList.map(t => t.plain_text).join("")
+  }
   return (
     <div>
       <div className="flex items-center justify-start">
@@ -25,19 +29,31 @@ export default async function BlogOrderByDatePage() {
           </Link>
         </Button>
       </div>
-      <div className="opacity-60 flex flex-col gap-2 mt-6 ">
-        {list.map(blog => (
-          <p key={blog.id} className="inline-flex flex-col leading-7">
-            <Link href={`/blog/${blog.id}`} className="inline-flex items-center gap-1 leading-7">
-              {blog.icon.type === 'emoji'
-                ? <span>{blog.icon.emoji}</span>
-                : <Book className="w-[1rem] h-[1rem]" />
-              }
-              <span>{blog.properties.Title.title[0].plaintext}</span>
-            </Link>
-            <span className="text-sm">{dayjs(blog.properties.Date.date.start).format("YYYY-MM-DD")}</span>
-          </p>
-        ))}
+      <div className="opacity-60 flex flex-col gap-2 mt-6">
+        {
+          list.map(item => {
+            return (
+              <section className=" space-y-2" key={item._id}>
+                <h6 className=" font-semibold text-xl leading-7">「{item._id}」</h6>
+                <ul className="ml-4">
+                  {
+                    item.data.map(blog => (
+                      <li key={blog.id}>
+                        <Link href={`blog/${blog.id}`} className="flex items-center gap-1 leading-7 group">
+                          {blog.icon
+                            ? <span>{blog.icon}</span>
+                            : <Book className="w-[1rem] h-[1rem]" />}
+                          <span className=" group-hover:underline group-hover:underline-offset-2">{genBlogTitle(blog.title)}</span>
+                        </Link>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </section>
+
+            )
+          })
+        }
       </div>
     </div>
   )

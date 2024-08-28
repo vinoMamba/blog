@@ -11,20 +11,38 @@ export const mongoClient = new MongoClient(uri, options);
 
 export const getBlogsOrderByDate = async () => {
   const db = mongoClient.db("blogs")
-  const list = await db.collection("list").find()
-    .sort({ 'properties.Date.date.start': -1 })
-    .toArray()
+  const list = await db.collection("list").aggregate([
+    { $match: { 'status.name': 'Done' } },
+    { $unwind: '$year' },
+    {
+      $group: {
+        _id: '$year',
+        data: { $push: '$$ROOT' }
+      }
+    },
+    {
+      $sort: {
+        _id: -1
+      }
+    }
+  ]).toArray()
   return list
 };
 
 export const getBlogsOrderByTag = async () => {
   const db = mongoClient.db("blogs")
   const list = await db.collection("list").aggregate([
-    { $unwind: '$properties.Tags.multiselect' },
+    { $match: { 'status.name': 'Done' } },
+    { $unwind: '$tags' },
     {
       $group: {
-        _id: '$properties.Tags.multiselect',
+        _id: '$tags.name',
         data: { $push: '$$ROOT' }
+      }
+    },
+    {
+      $sort: {
+        _id: -1
       }
     }
   ]).toArray()

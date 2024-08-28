@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { getBlogsOrderByTag } from "@/db"
+import { Book } from "lucide-react";
 import { CalendarArrowDown } from "lucide-react"
-import { Book } from "lucide-react"
 import Link from "next/link"
 
 export const metadata = {
@@ -13,6 +13,11 @@ export const metadata = {
 export default async function BlogOrderByTagPage() {
 
   const tagList = await getBlogsOrderByTag()
+
+  const genBlogTitle = (titleList) => {
+    return titleList.map(t => t.plain_text).join("")
+  }
+
   return (
     <div>
       <div className="flex items-center justify-start">
@@ -26,26 +31,28 @@ export default async function BlogOrderByTagPage() {
       </div>
       <div className="opacity-60 flex flex-col gap-2 mt-6">
         {
-          tagList.map(item => (
-            <div key={item._id} className="mb-6">
-              <p className="font-semibold text-xl mb-2">{item._id.name}
-                「{item.data.length}」
-              </p>
-              <div className="ml-2 inline-flex flex-col">
-                {
-                  item.data.map(blog => (
-                    <Link href={`/blog/${blog.id}`} key={blog.id} className="inline-flex items-center gap-1 leading-7">
-                      {blog.icon.type === 'emoji'
-                        ? <span>{blog.icon.emoji}</span>
-                        : <Book className="w-[1rem] h-[1rem]" />
-                      }
-                      <span>{blog.properties.Title.title[0].plaintext}</span>
-                    </Link>
-                  ))
-                }
-              </div>
-            </div>
-          ))
+          tagList.map(item => {
+            return (
+              <section className=" space-y-2" key={item._id}>
+                <h6 className=" font-semibold text-xl leading-7">「{item._id}」</h6>
+                <ul className="ml-4">
+                  {
+                    item.data.map(blog => (
+                      <li key={blog.id}>
+                        <Link href={`blog/${blog.id}`} className="flex items-center gap-1 leading-7 group">
+                          {blog.icon
+                            ? <span>{blog.icon}</span>
+                            : <Book className="w-[1rem] h-[1rem]" />}
+                          <span className=" group-hover:underline group-hover:underline-offset-2">{genBlogTitle(blog.title)}</span>
+                        </Link>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </section>
+
+            )
+          })
         }
       </div>
     </div>
