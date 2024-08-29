@@ -1,25 +1,14 @@
-"use client"
+import { DataTable } from "@/components/data.table"
+import { SyncListButton } from "@/components/sync-list-button"
+import { getAllBlocks } from "@/db"
 
-import { Button } from "@/components/ui/button"
-import { syncNotionData } from "@/db/notion"
-import { useState } from "react"
-import { toast } from "sonner"
 
-export default function SyncPage() {
-  const [content, setContent] = useState("Sync data")
-  const handleSync = async () => {
-    setContent('Syncing in progress...')
-    const ok = await syncNotionData()
-    if (ok) {
-      toast.success("Sync successful")
-    } else {
-      toast.error("Sync failed")
-    }
-    setContent('Sync data')
-  }
+export default async function SyncPage() {
+  const list = await getAllBlocks()
   return (
-    <main className="flex items-center justify-center h-screen w-screen">
-      <Button onClick={handleSync}>{content}</Button>
+    <main className="flex flex-col max-w-screen-sm justify-center h-screen w-screen gap-2 mx-auto">
+      <SyncListButton />
+      <DataTable data={list} />
     </main>
   )
 }

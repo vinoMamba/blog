@@ -1,7 +1,9 @@
 "use server"
-import { Client } from "@notionhq/client"
+import { Client, iteratePaginatedAPI } from "@notionhq/client"
 import { mongoClient } from "."
 import dayjs from "dayjs"
+import axios from "axios"
+import { createWriteStream, existsSync, lstatSync, mkdirSync, readdirSync, rmdirSync, unlinkSync } from "fs"
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN
@@ -16,11 +18,115 @@ export const syncNotionData = async () => {
     const list = transformResults(data.results)
     await db.collection('list').deleteMany()
     await db.collection('list').insertMany(list)
-    return "sync success"
+    console.log("Sync list finished")
+    return true
   } catch (error) {
     console.log(error)
-    return error
+    return false
   }
+}
+
+export const syncBlocks = async (blogId) => {
+  try {
+    const results = await retrieveBlockChildren(blogId)
+    const blocks = transformBlocks(results)
+
+    mkRootDir()
+    mkBlogDir(blogId)
+
+    blocks.forEach(async (block, index) => {
+      if (block.type === 'image') {
+        const filePath = `./assets/notion/${blogId}/${index}.png`
+        await downloadImageToLocal(block, filePath)
+      }
+    })
+
+    const db = mongoClient.db("blogs")
+    await db.collection('block').deleteOne({ id: blogId })
+    await db.collection('block').insertOne({ id: blogId, blocks, update_time: dayjs().format("YYYY-MM-DD:HH-mm-ss") })
+    console.log("sync blocks success")
+    return true
+  } catch (error) {
+    console.log(error)
+    return false
+  }
+}
+
+
+function mkRootDir() {
+  if (!existsSync("./assets/notion")) {
+    mkdirSync("./assets/notion")
+  }
+}
+
+function mkBlogDir(blogId) {
+  const blogPath = `./assets/notion/${blogId}`
+  if (existsSync(blogPath)) {
+    deleteFolderRecursive(blogPath)
+  }
+  mkdirSync(blogPath)
+}
+
+function deleteFolderRecursive(path) {
+  if (existsSync(path)) {
+    readdirSync(path).forEach((file) => {
+      const curPath = `${path}/${file}`;
+      if (lstatSync(curPath).isDirectory()) {
+        // 如果是文件夹，递归删除
+        deleteFolderRecursive(curPath);
+      } else {
+        // 如果是文件，直接删除
+        unlinkSync(curPath);
+      }
+    });
+    rmdirSync(path); // 删除空文件夹
+  }
+};
+
+function transformBlocks(blocks) {
+  const newBlocks = blocks.map(block => {
+    return {
+      id: block.id,
+      type: block.type,
+      [block.type]: block[block.type]
+    }
+  })
+  return newBlocks
+}
+async function downloadImageToLocal(block, filePath) {
+  const url = block.image[block.image.type].url
+
+  const response = await axios({
+    url,
+    method: 'GET',
+    responseType: 'stream',
+  });
+
+  response.data.pipe(createWriteStream(filePath));
+
+  return new Promise((resolve, reject) => {
+    response.data.on('end', () => {
+      block.image[block.image.type].url = filePath
+      resolve();
+    });
+    response.data.on('error', (error) => {
+      reject(error);
+    });
+  });
+}
+
+
+async function retrieveBlockChildren(id) {
+  console.log(`Retrieving blocks from pageId:${id} (async)...`)
+  const blocks = []
+  // Use iteratePaginatedAPI helper function to get all blocks first-level blocks on the page
+  for await (const block of iteratePaginatedAPI(notion.blocks.children.list, {
+    block_id: id, // A page ID can be passed as a block ID: https://developers.notion.com/docs/working-with-page-content#modeling-content-as-blocks
+  })) {
+    blocks.push(block)
+  }
+  console.log(blocks)
+  return blocks
 }
 
 

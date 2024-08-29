@@ -9,6 +9,44 @@ const options = {}
 
 export const mongoClient = new MongoClient(uri, options);
 
+
+export const getAllBlocks = async () => {
+  const db = mongoClient.db("blogs")
+  const list = await db.collection("list").aggregate([
+
+    {
+      $lookup: {
+        from: 'block',
+        localField: 'id',
+        foreignField: 'id',
+        as: 'relatedB'
+      }
+    },
+    {
+      $unwind: {
+        path: '$relatedB',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $project: {
+        id: 1,
+        title: 1,
+        lastUpdateTime: '$relatedB.update_time',
+      }
+    }
+  ]).toArray()
+
+  return list.map((item) => {
+    return {
+      id: item.id,
+      title: item.title[0].plain_text,
+      lastUpdateTime: item.lastUpdateTime
+    }
+  })
+
+}
+
 export const getBlogsOrderByDate = async () => {
   const db = mongoClient.db("blogs")
   const list = await db.collection("list").aggregate([
