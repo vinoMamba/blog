@@ -94,7 +94,7 @@ export const getBlogInfoById = async (id) => {
 }
 
 
-export const getBlocks = async (pageid) => {
+export const getBlocks = async (id) => {
   const db = mongoClient.db("blogs");
-  return await db.collection("block").find({ pageid }).toArray();
+  return await db.collection("block").findOne({ id });
 }

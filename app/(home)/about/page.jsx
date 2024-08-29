@@ -1,8 +1,6 @@
 import { cn } from '@/lib/utils';
 import { Playball } from 'next/font/google'
 import Image from 'next/image';
-import avatar from "@/assets/avatar.jpg"
-import wechat from "@/assets/wechat.jpg"
 import Link from 'next/link';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
@@ -23,8 +21,8 @@ const inter = Playball({
 export default function AboutMe() {
   return (
     <article className='leading-7'>
-      <Image src={avatar} width={125} height={125} alt='avatar' className='float-left m-4 ml-0 mt-0 rounded-md opacity-100 hidden md:inline-block' />
-      <Image src={avatar} width={80} height={80} alt='avatar' className='float-left m-4 ml-0 mt-0 rounded-md opacity-100 md:hidden' />
+      <Image src={"/avatar.jpg"} width={125} height={125} alt='avatar' className='float-left m-4 ml-0 mt-0 rounded-md opacity-100 hidden md:inline-block' />
+      <Image src={"/avatar.jpg"} width={80} height={80} alt='avatar' className='float-left m-4 ml-0 mt-0 rounded-md opacity-100 md:hidden' />
       <section className='opacity-60'>
         <h6 className={cn(inter.className, "md:text-3xl text-2xl font-semibold")}>{`Hey there,I'am Vino 👋`}</h6>
         <p className='md:mt-2'>
@@ -85,7 +83,7 @@ export default function AboutMe() {
                   duvino
                 </HoverCardTrigger>
                 <HoverCardContent>
-                  <Image src={wechat} width={256} height={272} alt='avatar' className='rounded-md opacity-100' />
+                  <Image src={"/wechat.jpg"} width={256} height={272} alt='avatar' className='rounded-md opacity-100' />
                 </HoverCardContent>
               </HoverCard>
             </span>
@@ -97,7 +95,7 @@ export default function AboutMe() {
                 </DrawerTrigger>
                 <DrawerContent>
                   <div className='flex items-center justify-center pt-4'>
-                    <Image src={wechat} width={256} height={272} alt='avatar' className='rounded-md opacity-100' />
+                    <Image src={"/wechat.jpg"} width={256} height={272} alt='avatar' className='rounded-md opacity-100' />
                   </div>
                 </DrawerContent>
               </Drawer>

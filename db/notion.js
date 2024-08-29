@@ -4,6 +4,7 @@ import { mongoClient } from "."
 import dayjs from "dayjs"
 import axios from "axios"
 import { createWriteStream, existsSync, lstatSync, mkdirSync, readdirSync, rmdirSync, unlinkSync } from "fs"
+import Jimp from 'jimp'
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN
@@ -28,18 +29,27 @@ export const syncNotionData = async () => {
 
 export const syncBlocks = async (blogId) => {
   try {
+
     const results = await retrieveBlockChildren(blogId)
     const blocks = transformBlocks(results)
 
     mkRootDir()
     mkBlogDir(blogId)
 
-    blocks.forEach(async (block, index) => {
-      if (block.type === 'image') {
-        const filePath = `./assets/notion/${blogId}/${index}.png`
-        await downloadImageToLocal(block, filePath)
+    for (let index = 0; index < blocks.length; index++) {
+      if (blocks[index].type === 'image') {
+        const filePath = `./public/notion/${blogId}/${index}.png`
+        await downloadImageToLocal(blocks[index], filePath)
+        blocks[index].image[blocks[index].image.type].url = filePath
+
+        const img = await Jimp.read(filePath)
+
+        blocks[index].image[blocks[index].image.type].width = img.getWidth()
+        blocks[index].image[blocks[index].image.type].height = img.getHeight()
+
+        console.log(blocks[index])
       }
-    })
+    }
 
     const db = mongoClient.db("blogs")
     await db.collection('block').deleteOne({ id: blogId })
@@ -54,13 +64,13 @@ export const syncBlocks = async (blogId) => {
 
 
 function mkRootDir() {
-  if (!existsSync("./assets/notion")) {
-    mkdirSync("./assets/notion")
+  if (!existsSync("./public/notion")) {
+    mkdirSync("./public/notion")
   }
 }
 
 function mkBlogDir(blogId) {
-  const blogPath = `./assets/notion/${blogId}`
+  const blogPath = `./public/notion/${blogId}`
   if (existsSync(blogPath)) {
     deleteFolderRecursive(blogPath)
   }
@@ -93,6 +103,7 @@ function transformBlocks(blocks) {
   })
   return newBlocks
 }
+
 async function downloadImageToLocal(block, filePath) {
   const url = block.image[block.image.type].url
 
@@ -106,7 +117,6 @@ async function downloadImageToLocal(block, filePath) {
 
   return new Promise((resolve, reject) => {
     response.data.on('end', () => {
-      block.image[block.image.type].url = filePath
       resolve();
     });
     response.data.on('error', (error) => {
@@ -125,7 +135,6 @@ async function retrieveBlockChildren(id) {
   })) {
     blocks.push(block)
   }
-  console.log(blocks)
   return blocks
 }
 
@@ -152,6 +161,7 @@ function transformResults(results = []) {
       // }
       status: properties.Status.status,
       year: properties.Date.date.start ? dayjs(properties.Date.date.start).format("YYYY") : '',
+      date: properties.Date.date.start ? dayjs(properties.Date.date.start).format("YYYY-MM-DD") : '',
       // title : [{
       //   "type": "text",
       //   "text": {

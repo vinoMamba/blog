@@ -39,7 +39,7 @@ export default async function BlogOrderByTagPage() {
                   {
                     item.data.map(blog => (
                       <li key={blog.id}>
-                        <Link href={`blog/${blog.id}`} className="flex items-center gap-1 leading-7 group">
+                        <Link href={`/blog/${blog.id}`} className="flex items-center gap-1 leading-7 group">
                           {blog.icon
                             ? <span>{blog.icon}</span>
                             : <Book className="w-[1rem] h-[1rem]" />}
