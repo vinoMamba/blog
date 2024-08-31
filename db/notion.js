@@ -15,6 +15,7 @@ export const syncNotionData = async () => {
     const db = mongoClient.db("blogs")
     const data = await notion.databases.query({
       database_id: process.env.DATABASE_ID,
+      inTrash: false
     })
     const list = transformResults(data.results)
     await db.collection('list').deleteMany()

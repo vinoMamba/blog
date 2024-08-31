@@ -1,3 +1,4 @@
+import { CdButton } from "@/components/cd-button"
 import { RenderBlocks } from "@/components/render-blocks"
 import { Separator } from "@/components/ui/separator"
 import { getBlocks, getBlogInfoById } from "@/db"
@@ -6,14 +7,13 @@ import { cn } from "@/lib/utils"
 import { Logs } from "lucide-react"
 import { CalendarDays } from "lucide-react"
 import { Book } from "lucide-react"
-import Link from "next/link"
 
 export default async function BlogPage({ params }) {
   const blog = await getBlocks(params.id)
   const blogInfo = await getBlogInfoById(params.id)
   return (
-    <div>
-      <article className="">
+    <div className="pb-40">
+      <article className="opacity-80">
         <h1 className=" text-3xl font-semibold flex items-center gap-2 mb-4">
           {blogInfo.icon
             ? <span>{blogInfo.icon}</span>
@@ -42,11 +42,9 @@ export default async function BlogPage({ params }) {
 
         <section>
           <RenderBlocks blocks={blog.blocks} />
-          {/* {blog.blocks.map(item => JSON.stringify(item.type))} */}
-          {JSON.stringify(blog.blocks)}
         </section>
       </article>
-      <Link href="/blog" className=" underline">cd ..</Link>
+      <CdButton />
     </div>
   )
 }

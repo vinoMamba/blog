@@ -1,3 +1,4 @@
+import { tagColors } from "@/lib/notion_tag_color"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 
@@ -20,7 +21,7 @@ function RenderBlock({ block }) {
     case 'breadcrumb':
       return null
     case 'bulleted_list_item':
-      return null
+      return <BulletedListItem block={block} />
     case 'callout':
       return null
     case 'child_database':
@@ -28,7 +29,7 @@ function RenderBlock({ block }) {
     case 'child_page':
       return null
     case 'code':
-      return null
+      return <CodeBlock block={block} />
     case 'column_list':
       return null
     case 'column':
@@ -78,25 +79,48 @@ function RenderBlock({ block }) {
   }
 }
 
+function CodeBlock({ block }) {
+  return null
+}
+
+function BulletedListItem({ block }) {
+  <div className="my-1">
+    <div className="pl-4 whitespace-pre-wrap break-words">
+      <div className=" w-6 inline-flex items-center justify-center">•</div>
+      {
+        block.numbered_list_item.rich_text.map((text, idx) => (
+          <>
+            <RichText key={idx} text={text} />
+          </>
+        ))
+      }
+    </div>
+  </div>
+}
+
 function NotionImage({ block }) {
   const url = block.image[block.image.type].url.replace("./public", "")
   const width = block.image[block.image.type].width || 100
   const height = block.image[block.image.type].height || 100
   return (
-    <div>
-      <Image src={url} width={width} height={height} alt={url} />
+    <div className="flex justify-center">
+      <Image src={url} width={width} height={height} alt={url} className=" max-w-[400px]" />
     </div>
   )
 }
 
 function Heading1({ block }) {
   return (
-    <div>
-      {
-        block.heading_1.rich_text.map((text, idx) => (
-          <RichText key={idx} text={text} />
-        ))
-      }
+    <div className=" mt-4">
+      <div className="flex">
+        <h2 className=" font-semibold text-3xl m-0 leading-7">
+          {
+            block.heading_1.rich_text.map((text, idx) => (
+              <RichText key={idx} text={text} />
+            ))
+          }
+        </h2>
+      </div>
     </div>
   )
 }
@@ -120,24 +144,30 @@ function Heading2({ block }) {
 
 function Heading3({ block }) {
   return (
-    <div>
-      {
-        block.heading_3.rich_text.map((text, idx) => (
-          <RichText key={idx} text={text} />
-        ))
-      }
+    <div className=" mt-4">
+      <div className="flex">
+        <h4 className=" font-semibold text-xl m-0 leading-7">
+          {
+            block.heading_3.rich_text.map((text, idx) => (
+              <RichText key={idx} text={text} />
+            ))
+          }
+        </h4>
+      </div>
     </div>
   )
 }
 
 function NumberedListItem({ block }) {
   return (
-    <div>
-      {
-        block.numbered_list_item.rich_text.map((text, idx) => (
-          <RichText key={idx} text={text} />
-        ))
-      }
+    <div className="my-1">
+      <div className="pl-4 whitespace-pre-wrap break-words">
+        {
+          block.numbered_list_item.rich_text.map((text, idx) => (
+            <RichText key={idx} text={text} />
+          ))
+        }
+      </div>
     </div>
   )
 }
@@ -174,14 +204,43 @@ function Paragraph({ block }) {
 }
 
 function RichText({ text }) {
-  const { annotations } = text
-  return (
-    <span className={cn(
-      annotations.bold && 'font-semibold',
-      annotations.italic && 'italic',
-      annotations.strikethrough && ' line-through',
-      annotations.underline && ' underline',
-    )}>{text.text.content}</span>
-  )
+  const { annotations: { bold, italic, strikethrough, underline, code, color } } = text
+  if (code) {
+    return <Code text={text} />
+  }
+  if (bold || italic || strikethrough || underline) {
+    return (
+      <span
+        style={{ color: tagColors[color] }}
+        className={cn(
+          bold && 'font-semibold',
+          italic && 'italic',
+          strikethrough && 'line-through',
+          underline && 'underline',
+        )}>
+        {text.text.content}
+      </span>
+    )
+  } else {
+    return text.text.content
+  }
 }
 
+function Code({ text }) {
+  const { annotations: { bold, italic, strikethrough, underline } } = text
+  if (text.text.link) {
+    return null
+  }
+  return (
+    <span
+      className={cn(
+        bold && 'font-semibold',
+        italic && 'italic',
+        strikethrough && 'line-through',
+        underline && 'underline',
+        " text-[#EB5757] dark:bg-[#292927] bg-[#ededeb] rounded-sm px-[3px] py-[1px]"
+      )}>
+      {text.text.content}
+    </span>
+  )
+}

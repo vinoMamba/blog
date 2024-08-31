@@ -7,7 +7,7 @@ import { ModeToggle } from "./theme-toggle"
 
 const linkList = [
   { href: "/about", title: '关于', tag: 'about' },
-  { href: "/blog/order_by_tag", title: '博客', tag: 'blog' },
+  { href: "/blog/order_by_date", title: '博客', tag: 'blog' },
   { href: "/project", title: '项目', tag: 'project' },
 ]
 
