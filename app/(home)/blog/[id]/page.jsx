@@ -38,9 +38,9 @@ export default async function BlogPage({ params }) {
             }
           </span>
         </p>
-        <Separator className="my-2" />
+        <Separator className="my-2 " />
 
-        <section>
+        <section className=" opacity-90 leading-7">
           <RenderBlocks blocks={blog.blocks} />
         </section>
       </article>

@@ -148,7 +148,7 @@ function transformResults(results = []) {
       createdTime: item.created_time,
       lastEditedTime: item.last_edited_time,
       inTrash: item.in_trash,
-      icon: item.icon.emoji,
+      icon: item.icon.emoji || "",
       // tags {
       //   "id": "f1c1e1da-ad19-4f14-9a26-3eb5af34e80d",
       //   "name": "browser",
