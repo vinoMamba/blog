@@ -13,7 +13,6 @@ export const mongoClient = new MongoClient(uri, options);
 export const getAllBlocks = async () => {
   const db = mongoClient.db("blogs")
   const list = await db.collection("list").aggregate([
-
     {
       $lookup: {
         from: 'block',

@@ -1,5 +1,5 @@
 "use client"
-import { syncBlocks } from "@/db/notion"
+import { syncPagetoMongo } from "@/db/notion"
 import { Button } from "./ui/button"
 import { toast } from "sonner"
 import { useState } from "react"
@@ -9,7 +9,7 @@ export const SyncBlogButton = ({ blogId }) => {
   const onClick = async () => {
     setContent("Syncing in progress")
     try {
-      const ok = await syncBlocks(blogId)
+      const ok = await syncPagetoMongo(blogId)
       if (ok) {
         toast.success("Sync blog finished")
       } else {

@@ -1,4 +1,6 @@
 import { Inter } from "next/font/google";
+import 'react-notion-x/src/styles.css'
+import 'prismjs/themes/prism-tomorrow.css'
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Particle } from "@/components/particles";
