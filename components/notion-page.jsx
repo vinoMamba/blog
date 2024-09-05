@@ -60,17 +60,17 @@ export const NotionPage = ({ recordMap }) => {
   }
 
   return (
-    <>
+    <div>
       <NotionRenderer
         recordMap={recordMap}
         darkMode={isDarkMode()}
-        previewImages
+        previewImages={false}
         components={{
           Code,
           Collection,
-          nextLink: Link
+          nextLink: Link,
         }}
       />
-    </>
+    </div>
   )
 }
