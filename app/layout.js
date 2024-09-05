@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
       lang="en"
       suppressHydrationWarning
     >
-      <body className={cn(inter.className)}>
+      <body className={cn(inter.className, " overflow-x-hidden")}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

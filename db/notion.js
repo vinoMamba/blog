@@ -3,7 +3,6 @@ import { Client } from "@notionhq/client"
 import { NotionAPI } from 'notion-client'
 import { mongoClient } from "."
 import dayjs from "dayjs"
-import { getPageImageUrls } from "notion-utils"
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN

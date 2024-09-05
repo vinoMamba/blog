@@ -2,6 +2,7 @@
 import { useTheme } from 'next-themes'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { NotionRenderer } from 'react-notion-x'
 
 const Code = dynamic(() =>
@@ -50,21 +51,20 @@ const Collection = dynamic(() =>
 )
 
 export const NotionPage = ({ recordMap }) => {
-
-  const { theme, systemTheme } = useTheme()
-  const isDarkMode = () => {
-    if (theme === 'system') {
-      return systemTheme === 'dark'
-    }
-    return theme === 'dark'
-  }
-
+  const { resolvedTheme } = useTheme()
+  const [isDark, setIsDark] = useState(false)
+  useEffect(() => {
+    setIsDark(resolvedTheme === 'dark')
+  }, [resolvedTheme])
   return (
     <div>
       <NotionRenderer
         recordMap={recordMap}
-        darkMode={isDarkMode()}
+        darkMode={isDark}
+        fullPage
         previewImages={false}
+        className=' bg-transparent'
+        disableHeader
         components={{
           Code,
           Collection,
