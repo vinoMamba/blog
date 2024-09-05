@@ -1,11 +1,11 @@
 "use client"
 import { useTheme } from 'next-themes'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 import { NotionRenderer } from 'react-notion-x'
 
 const Code = dynamic(() =>
   import('react-notion-x/build/third-party/code').then(async (m) => {
-    // additional prism syntaxes
     await Promise.all([
       import('prismjs/components/prism-markup-templating.js'),
       import('prismjs/components/prism-markup.js'),
@@ -43,6 +43,12 @@ const Code = dynamic(() =>
   })
 )
 
+const Collection = dynamic(() =>
+  import('react-notion-x/build/third-party/collection').then(
+    (m) => m.Collection
+  )
+)
+
 export const NotionPage = ({ recordMap }) => {
 
   const { theme, systemTheme } = useTheme()
@@ -58,11 +64,11 @@ export const NotionPage = ({ recordMap }) => {
       <NotionRenderer
         recordMap={recordMap}
         darkMode={isDarkMode()}
-        fullPage={true}
-        className='bg-transparent'
-        disableHeader
+        previewImages
         components={{
-          Code
+          Code,
+          Collection,
+          nextLink: Link
         }}
       />
     </>

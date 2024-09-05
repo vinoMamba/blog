@@ -6,7 +6,7 @@ export default async function BlogPage({ params }) {
   const data = await getBlocks(params.id) 
   return (
     <div className="pb-40">
-      <article className="opacity-80">
+      <article>
         <NotionPage recordMap={data.data} />
       </article>
       <CdButton />
