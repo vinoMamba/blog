@@ -67,8 +67,8 @@ function transformResults(results = []) {
       icon: item.icon ? item.icon.emoji : "",
       tags: properties.Tags.multi_select,
       status: properties.Status.status,
-      year: properties.Date.date.start ? dayjs(properties.Date.date.start).format("YYYY") : '',
-      date: properties.Date.date.start ? dayjs(properties.Date.date.start).format("YYYY-MM-DD") : '',
+      year: (properties.Date.date && properties.Date.date.start) ? dayjs(properties.Date.date.start).format("YYYY") : '',
+      date: (properties.Date.date && properties.Date.date.start) ? dayjs(properties.Date.date.start).format("YYYY-MM-DD") : '',
       title: properties.Title.title
     }
   })
