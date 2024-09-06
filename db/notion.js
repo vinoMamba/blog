@@ -35,7 +35,13 @@ export const syncNotionData = async () => {
     const db = mongoClient.db("blogs")
     const data = await notion.databases.query({
       database_id: process.env.DATABASE_ID,
-      inTrash: false
+      inTrash: false,
+      filter: {
+        property: 'Status',
+        status: {
+          equals: 'Done'
+        }
+      }
     })
 
     const list = transformResults(data.results)
@@ -58,7 +64,7 @@ function transformResults(results = []) {
       createdTime: item.created_time,
       lastEditedTime: item.last_edited_time,
       inTrash: item.in_trash,
-      icon: item.icon.emoji || "",
+      icon: item.icon ? item.icon.emoji : "",
       tags: properties.Tags.multi_select,
       status: properties.Status.status,
       year: properties.Date.date.start ? dayjs(properties.Date.date.start).format("YYYY") : '',
