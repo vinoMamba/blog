@@ -7,7 +7,8 @@ export const metadata = {
   description: "Welcome to vino's blog",
 };
 
-export default async function BlogPage({ params }) {
+export default async function BlogPage(props) {
+  const params = await props.params;
   const data = await getBlocks(params.id)
   return (
     <div className="pb-40">
