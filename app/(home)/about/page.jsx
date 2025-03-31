@@ -21,15 +21,15 @@ const inter = Playball({
 export default function AboutMe() {
   return (
     <article className='leading-7'>
-      <Image src={"/avatar.jpg"} width={125} height={125} alt='avatar' className='float-left m-4 ml-0 mt-0 rounded-md opacity-100 hidden md:inline-block' />
-      <Image src={"/avatar.jpg"} width={80} height={80} alt='avatar' className='float-left m-4 ml-0 mt-0 rounded-md opacity-100 md:hidden' />
+      <Image src={"/avatar.png"} width={125} height={125} alt='avatar' className='float-left m-4 ml-0 mt-0 rounded-md opacity-100 hidden md:inline-block' />
+      <Image src={"/avatar.png"} width={80} height={80} alt='avatar' className='float-left m-4 ml-0 mt-0 rounded-md opacity-100 md:hidden' />
       <section className='opacity-60'>
         <h6 className={cn(inter.className, "md:text-3xl text-2xl font-semibold")}>{`Hey there,I'am Vino 👋`}</h6>
         <p className='md:mt-2'>
           我是一名软件工程师，目前专注于 <b>Web</b> 开发领域。
         </p>
         <p className='leading-7 mt-2 md:mt-0' >
-          <b>JavaScript</b> 是我的主要开发语言， 但是更喜欢 <b>Golang</b> 🤣，目前正在使用这两种语言开发全栈项目。平时会用 Lua 写一点脚本。
+          <b>JavaScript</b> 是我的主要开发语言， 但是更喜欢 <b>Golang</b> 🤣，目前正在使用这两种语言开发全栈项目，专注于AI技术在应用端的具体落地，探索AI的使用场景。
         </p>
         <p className='mt-6 '>我日常的开发工具是：</p>
         <ol className='ml-4 '>
@@ -46,14 +46,15 @@ export default function AboutMe() {
           <li> - 语言：
             <i className=' text-[#fcdc44] font-semibold'> JavaScript </i>,
             <i className='text-[#1fadd5] font-semibold'>  Golang </i>,
-            <i className='text-[#c93933] font-semibold'>  Ruby </i>
+            <i className='text-[#c93933] font-semibold'>  Ruby</i>
           </li>
           <li> - 前端：
             <i className=' text-[#5ec3da] font-semibold'> React.js </i>,
             <i className=' text-[#4bb787] font-semibold'> Vue.js </i>,
             <i className=' text-[#171717] dark:text-white font-semibold'> Next.js </i>,
           </li>
-          <li> - 后端：Fiber「Golang」, Rails「Ruby」</li>
+          <li> - 后端：Fiber, Kratos「Golang」, Rails「Ruby」</li>
+          <li> - <b>AI：</b> Tools, Prompt Engineering, MCP, Embedding </li>
         </ul>
       </section>
       <section className='opacity-60 mt-6'>
